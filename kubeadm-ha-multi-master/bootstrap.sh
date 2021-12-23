@@ -8,4 +8,4 @@ systemctl reload sshd
 
 # Set Root password
 echo "[TASK 2] Set root password"
-echo -e "kubeadmin\nkubeadmin" | passwd root >/dev/null 2>&1
+echo -e "parola\nparola" | passwd root >/dev/null 2>&1
