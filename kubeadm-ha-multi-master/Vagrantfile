@@ -21,6 +21,7 @@ Vagrant.configure(2) do |config|
     lb.vm.hostname = "loadbalancer.ornek.com"
     lb.vm.network "private_network", ip: "192.168.111.100"
     lb.vm.provider "hyperv" do |v|
+      v.vswitch = "WLS"
       v.vmname = "loadbalancer"
       v.memory = 1024
       v.cpus = 1
@@ -36,6 +37,7 @@ Vagrant.configure(2) do |config|
       masternode.vm.hostname = "kmaster#{i}.ornek.com"
       masternode.vm.network "private_network", ip: "192.168.111.10#{i}"
       masternode.vm.provider "hyperv" do |v|
+        v.vswitch = "WLS"
         v.vmname = "kmaster#{i}"
         v.memory = 2048
         v.cpus = 2
@@ -52,6 +54,7 @@ Vagrant.configure(2) do |config|
       workernode.vm.hostname = "kworker#{i}.ornek.com"
       workernode.vm.network "private_network", ip: "192.168.111.20#{i}"
       workernode.vm.provider "hyperv" do |v|
+        v.vswitch = "WLS"
         v.vmname = "kworker#{i}"
         v.memory = 1024
         v.cpus = 1
