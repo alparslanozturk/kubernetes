@@ -36,18 +36,18 @@ apt update && apt install -y haproxy
 ##### Configure haproxy
 Append the below lines to **/etc/haproxy/haproxy.cfg**
 ```
-frontend kubernetes-frontend
-    bind 1.1.1.100:6443
-    mode tcp
-    option tcplog
-    default_backend kubernetes-backend
-
-backend kubernetes-backend
-    mode tcp
-    option tcp-check
-    balance roundrobin
-    server kmaster1 1.1.1.101:6443 check fall 3 rise 2
-    server kmaster2 1.1.1.102:6443 check fall 3 rise 2
+listen stats
+  mode http
+  bind *:80
+  stats enable
+  stats uri /
+listen kubernetes-api
+  bind *:6443
+  option tcplog
+  balance roundrobin
+  default-server check fail 3 rise 2
+    server kmaster1 1.1.1.101:6443
+    server kmaster1 1.1.1.101:6443
 ```
 ##### Restart haproxy service
 ```
@@ -95,12 +95,13 @@ apt update && apt install -y kubeadm=1.19.2-00 kubelet=1.19.2-00 kubectl=1.19.2-
 ## On any one of the Kubernetes master node (Eg: kmaster1)
 ##### Initialize Kubernetes Cluster
 ```
-kubeadm init --control-plane-endpoint="1.1.1.100:6443" --upload-certs --apiserver-advertise-address=1.1.1.101 --pod-network-cidr=192.168.0.0/16
+kubeadm init --control-plane-endpoint="1.1.1.100:6443" --upload-certs --apiserver-advertise-address=1.1.1.101
 ```
 Copy the commands to join other master nodes and worker nodes.
-##### Deploy Calico network
+##### Deploy Weave network
 ```
-kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://docs.projectcalico.org/v3.15/manifests/calico.yaml
+curl -sSL "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')&env.IPALLOC_RANGE=10.32.0.0/12" > weave.yaml
+kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f weave.yaml
 ```
 
 ## Join other nodes to the cluster (kmaster2 & kworker1)
