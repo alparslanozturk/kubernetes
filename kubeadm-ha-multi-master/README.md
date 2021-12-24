@@ -6,18 +6,20 @@ This documentation guides you in setting up a cluster with two master nodes, one
 ## Vagrant Environment
 |Role|FQDN|IP|OS|RAM|CPU|
 |----|----|----|----|----|----|
-|Load Balancer|loadbalancer.example.com|192.168.111.100|Ubuntu 20.04|1G|1|
-|Master|kmaster1.example.com|192.168.111.101|Ubuntu 20.04|2G|2|
-|Master|kmaster2.example.com|192.168.111.102|Ubuntu 20.04|2G|2|
-|Worker|kworker1.example.com|192.168.111.201|Ubuntu 20.04|1G|1|
+|Load Balancer|loadbalancer.example.com|1.1.1.100|Ubuntu 20.04|1G|1|
+|Master|kmaster1.example.com|1.1.1.101|Ubuntu 20.04|2G|2|
+|Master|kmaster2.example.com|1.1.1.102|Ubuntu 20.04|2G|2|
+|Worker|kworker1.example.com|1.1.1.201|Ubuntu 20.04|1G|1|
 
 > * Password for the **root** account on all these virtual machines is **parola**
 > * Perform all the commands as root user unless otherwise specified
 
 ## Pre-requisites
 If you want to try this in a virtualized environment on your workstation
-* Virtualbox installed
+* Vmware Workstation installed
 * Vagrant installed
+* Vagrant Vmware provider & plugin installed
+* Microsoft Windows openSSH feature installed 
 * Host machine has atleast 8 cores
 * Host machine has atleast 8G memory
 
@@ -35,7 +37,7 @@ apt update && apt install -y haproxy
 Append the below lines to **/etc/haproxy/haproxy.cfg**
 ```
 frontend kubernetes-frontend
-    bind 192.168.111.100:6443
+    bind 1.1.1.100:6443
     mode tcp
     option tcplog
     default_backend kubernetes-backend
@@ -44,8 +46,8 @@ backend kubernetes-backend
     mode tcp
     option tcp-check
     balance roundrobin
-    server kmaster1 192.168.111.101:6443 check fall 3 rise 2
-    server kmaster2 192.168.111.102:6443 check fall 3 rise 2
+    server kmaster1 1.1.1.101:6443 check fall 3 rise 2
+    server kmaster2 1.1.1.102:6443 check fall 3 rise 2
 ```
 ##### Restart haproxy service
 ```
@@ -93,7 +95,7 @@ apt update && apt install -y kubeadm=1.19.2-00 kubelet=1.19.2-00 kubectl=1.19.2-
 ## On any one of the Kubernetes master node (Eg: kmaster1)
 ##### Initialize Kubernetes Cluster
 ```
-kubeadm init --control-plane-endpoint="192.168.111.100:6443" --upload-certs --apiserver-advertise-address=192.168.111.101 --pod-network-cidr=192.168.0.0/16
+kubeadm init --control-plane-endpoint="1.1.1.100:6443" --upload-certs --apiserver-advertise-address=1.1.1.101 --pod-network-cidr=192.168.0.0/16
 ```
 Copy the commands to join other master nodes and worker nodes.
 ##### Deploy Calico network
@@ -110,7 +112,7 @@ kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f https://docs.projectca
 On your host machine
 ```
 mkdir ~/.kube
-scp root@192.168.111.101:/etc/kubernetes/admin.conf ~/.kube/config
+scp root@1.1.1.101:/etc/kubernetes/admin.conf ~/.kube/config
 ```
 Password for root account is kubeadmin (if you used my Vagrant setup)
 
