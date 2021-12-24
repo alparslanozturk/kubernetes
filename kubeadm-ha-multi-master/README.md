@@ -41,13 +41,14 @@ listen stats
   bind *:80
   stats enable
   stats uri /
+
 listen kubernetes-api
   bind *:6443
   option tcplog
   balance roundrobin
-  default-server check fail 3 rise 2
+  default-server check fall 3 rise 2
     server kmaster1 1.1.1.101:6443
-    server kmaster1 1.1.1.101:6443
+    server kmaster2 1.1.1.102:6443
 ```
 ##### Restart haproxy service
 ```
