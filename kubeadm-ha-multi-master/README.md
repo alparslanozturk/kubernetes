@@ -56,11 +56,6 @@ listen kubernetes-api
 systemctl restart haproxy
 ```
 
-## On all kubernetes nodes (kmaster1, kmaster2, kworker1)
-##### Disable Firewall
-```
-ufw disable
-```
 ##### Disable swap
 ```
 swapoff -a; sed -i '/swap/d' /etc/fstab
@@ -79,7 +74,7 @@ sysctl --system
   apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
   add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  apt update && apt install -y docker-ce=5:19.03.10~3-0~ubuntu-focal containerd.io
+  apt update && apt install -y docker-ce containerd.io
 }
 ```
 ### Kubernetes Setup
@@ -92,7 +87,7 @@ sysctl --system
 ```
 ##### Install Kubernetes components
 ```
-apt update && apt install -y kubeadm=1.19.2-00 kubelet=1.19.2-00 kubectl=1.19.2-00
+apt update && apt install -y kubeadm kubelet kubectl
 ```
 ## On any one of the Kubernetes master node (Eg: kmaster1)
 ##### Initialize Kubernetes Cluster

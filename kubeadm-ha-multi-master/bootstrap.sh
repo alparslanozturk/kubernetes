@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Disable ipv6
-echo  "Disabling IPv6"
+echo  "[TASK 0] Disabling IPv6"
 echo "net.ipv6.conf.all.disable_ipv6 = 1
       net.ipv6.conf.default.disable_ipv6 = 1
       net.ipv6.conf.lo.disable_ipv6 = 1
