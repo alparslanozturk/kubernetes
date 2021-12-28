@@ -6,10 +6,10 @@ This documentation guides you in setting up a cluster with two master nodes, one
 ## Vagrant Environment
 |Role|FQDN|IP|OS|RAM|CPU|
 |----|----|----|----|----|----|
-|Load Balancer|loadbalancer.example.com|1.1.1.100|Ubuntu 20.04|1G|1|
-|Master|kmaster1.example.com|1.1.1.101|Ubuntu 20.04|2G|2|
-|Master|kmaster2.example.com|1.1.1.102|Ubuntu 20.04|2G|2|
-|Worker|kworker1.example.com|1.1.1.201|Ubuntu 20.04|1G|1|
+|Load Balancer|loadbalancer.example.com|3.3.3.100|Ubuntu 20.04|1G|1|
+|Master|kmaster1.example.com|3.3.3.101|Ubuntu 20.04|2G|2|
+|Master|kmaster2.example.com|3.3.3.102|Ubuntu 20.04|2G|2|
+|Worker|kworker1.example.com|3.3.3.201|Ubuntu 20.04|1G|1|
 
 > * Password for the **root** account on all these virtual machines is **parola**
 > * Perform all the commands as root user unless otherwise specified
@@ -48,8 +48,8 @@ listen kubernetes-api
   balance roundrobin
   #default-server check inter 2s fall 3 rise 2
   default-server check
-    server kmaster1 1.1.1.101:6443
-    server kmaster2 1.1.1.102:6443
+    server kmaster1 3.3.3.101:6443
+    server kmaster2 3.3.3.102:6443
 ```
 ##### Restart haproxy service
 ```
@@ -92,7 +92,7 @@ apt update && apt install -y kubeadm kubelet kubectl
 ## On any one of the Kubernetes master node (Eg: kmaster1)
 ##### Initialize Kubernetes Cluster
 ```
-kubeadm init --control-plane-endpoint="1.1.1.100:6443" --upload-certs --apiserver-advertise-address=1.1.1.101
+kubeadm init --control-plane-endpoint="3.3.3.100:6443" --upload-certs --apiserver-advertise-address=3.3.3.101
 ```
 Copy the commands to join other master nodes and worker nodes.
 ##### Deploy Weave network
@@ -110,7 +110,7 @@ kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f weave.yaml
 On your host machine
 ```
 mkdir ~/.kube
-scp root@1.1.1.101:/etc/kubernetes/admin.conf ~/.kube/config
+scp root@3.3.3.101:/etc/kubernetes/admin.conf ~/.kube/config
 ```
 Password for root account is kubeadmin (if you used my Vagrant setup)
 

@@ -8,6 +8,11 @@ echo "net.ipv6.conf.all.disable_ipv6 = 1
       net.ipv6.conf.eth0.disable_ipv6 = 1" >> /etc/sysctl.conf
 sysctl -p
 
+# Disable ufw
+echo "TASK 0] Disabling ufw"
+ufw disable 
+systemctl  disable --now multipathd
+
 
 # Enable ssh password authentication
 echo "[TASK 1] Enable ssh password authentication"
