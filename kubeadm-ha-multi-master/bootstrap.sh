@@ -35,6 +35,8 @@ cat <<EOF | tee /etc/docker/daemon.json
 }
 EOF
 
+###Disable swap
+swapoff -a; sed -i '/swap/d' /etc/fstab
 
 ###Enable ssh password authentication
 sed -i 's/^PermitRootLogin .*/PermitRootLogin yes/' /etc/ssh/sshd_config
