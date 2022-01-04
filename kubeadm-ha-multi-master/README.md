@@ -1,15 +1,15 @@
 # Set up a Highly Available Kubernetes Cluster using kubeadm
-Follow this documentation to set up a highly available Kubernetes cluster using __Ubuntu 20.04 LTS__.
+Follow this documentation to set up a highly available Kubernetes cluster using __Debian GNU/Linux 11 (bullseye)__.
 
 This documentation guides you in setting up a cluster with two master nodes, one worker node and a load balancer node using HAProxy.
 
 ## Vagrant Environment
 |Role|FQDN|IP|OS|RAM|CPU|
 |----|----|----|----|----|----|
-|Load Balancer|loadbalancer.example.com|3.3.3.100|Ubuntu 20.04|1G|1|
-|Master|kmaster1.example.com|3.3.3.101|Ubuntu 20.04|2G|2|
-|Master|kmaster2.example.com|3.3.3.102|Ubuntu 20.04|2G|2|
-|Worker|kworker1.example.com|3.3.3.201|Ubuntu 20.04|1G|1|
+|Load Balancer|loadbalancer.example.com|3.3.3.100|Debian 11|1G|1|
+|Master|kmaster1.example.com|3.3.3.101|Debian 11|2G|2|
+|Master|kmaster2.example.com|3.3.3.102|Debian 11|2G|2|
+|Worker|kworker1.example.com|3.3.3.201|Debian 11|1G|1|
 
 > * Password for the **root** account on all these virtual machines is **parola**
 > * Perform all the commands as root user unless otherwise specified

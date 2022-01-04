@@ -8,11 +8,15 @@ Vagrant.configure(2) do |config|
   config.vm.provider "vmware_workstation"
   config.vm.provision "shell", path: "bootstrap.sh"
 
+  config.ssh.username = "root"
+  config.ssh.password = "parola"
+  config.ssh.insert_key = "true"
+
   # Load Balancer Node
   config.vm.define "loadbalancer" do |lb|
-    lb.vm.box = "bento/ubuntu-20.04"
+    lb.vm.box = "alparslanozturk/debian"
     lb.vm.hostname = "loadbalancer.ornek.com"
-    lb.vm.network "private_network", ip: "3.3.3.100"
+    lb.vm.network "private_network", ip: "2.2.2.100"
     lb.vm.provider "vmware_workstation" do |v|
       v.vmx["displayname"] = "loadbalancer"
       v.vmx["memsize"] = 1024
@@ -25,9 +29,9 @@ Vagrant.configure(2) do |config|
   # Kubernetes Master Nodes
   (1..MasterCount).each do |i|
     config.vm.define "kmaster#{i}" do |masternode|
-      masternode.vm.box = "bento/ubuntu-20.04"
+      masternode.vm.box = "alparslanozturk/debian"
       masternode.vm.hostname = "kmaster#{i}.ornek.com"
-      masternode.vm.network "private_network", ip: "3.3.3.10#{i}"
+      masternode.vm.network "private_network", ip: "2.2.2.10#{i}"
       masternode.vm.provider "vmware_workstation" do |v|
         v.vmx["displayname"] = "kmaster#{i}"
         v.vmx["memsize"] = 2048
@@ -41,9 +45,9 @@ Vagrant.configure(2) do |config|
   # Kubernetes Worker Nodes
   (1..NodeCount).each do |i|
     config.vm.define "kworker#{i}" do |workernode|
-      workernode.vm.box = "bento/ubuntu-20.04"
+      workernode.vm.box = "alparslanozturk/debian"
       workernode.vm.hostname = "kworker#{i}.ornek.com"
-      workernode.vm.network "private_network", ip: "3.3.3.20#{i}"
+      workernode.vm.network "private_network", ip: "2.2.2.20#{i}"
       workernode.vm.provider "vmware_workstation" do |v|
         v.vmx["displayname"] = "kworker#{i}"
         v.vmx["memsize"] = 1024
