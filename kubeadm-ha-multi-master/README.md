@@ -56,6 +56,7 @@ listen kubernetes-api
 systemctl restart haproxy
 ```
 
+### Kubernetes Setup
 ##### Disable swap
 ```
 swapoff -a; sed -i '/swap/d' /etc/fstab
@@ -77,8 +78,8 @@ sysctl --system
   apt update && apt-get install docker-ce docker-ce-cli containerd.io
 }
 ```
-### Kubernetes Setup
-##### Add Apt repository
+
+##### Add Apt repository: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
 ```
 {
   apt-get install -y apt-transport-https ca-certificates curl
