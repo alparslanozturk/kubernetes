@@ -37,19 +37,21 @@ apt update && apt install -y haproxy
 Append the below lines to **/etc/haproxy/haproxy.cfg**
 ```
 listen stats
-  mode http
-  bind *:80
-  stats enable
-  stats uri /
+        mode http
+        bind *:80
+        stats enable
+        stats uri /
 
 listen kubernetes-api
-  bind *:6443
-  option tcplog
-  balance roundrobin
-  #default-server check inter 2s fall 3 rise 2
-  default-server check
-    server kmaster1 2.2.2.101:6443
-    server kmaster2 2.2.2.102:6443
+        mode tcp
+        bind *:6443
+        option tcplog
+        #option ssl-hello-chk
+        #option httpchk GET /healthz 200
+        balance roundrobin
+        default-server check inter 2s fall 3 rise 2
+                server kmaster1 2.2.2.101:6443
+                server kmaster2 2.2.2.102:6443
 ```
 ##### Restart haproxy service
 ```
@@ -93,10 +95,27 @@ apt-get update && apt-get install -y kubelet kubeadm kubectl && apt-mark hold ku
 ```
 ## On any one of the Kubernetes master node (Eg: kmaster1)
 ##### Initialize Kubernetes Cluster
+First I prefared name instead of IP. So add /etc/hosts these config;
 ```
-kubeadm init --control-plane-endpoint="2.2.2.100:6443" --upload-certs --apiserver-advertise-address=2.2.2.101
+cat >> /etc/hosts<<EOF
+2.2.2.101 loadbalancer.ornek.com loadbalancer
+2.2.2.101 kmaster1.ornek.com kmaster1
+2.2.2.102 kmaster2.ornek.com kmaster2
+2.2.2.103 kworker1.ornek.com kworker1
+EOF
 ```
-Copy the commands to join other master nodes and worker nodes.
+After finish "kubeadm init ..."  change first line of hosts file. loadbalancer ip address: ``` 2.2.2.100 loadbalancer.ornek.com loadbalancer ```
+
+```
+kubeadm init --control-plane-endpoint="loadbalancer.ornek.com:6443" --upload-certs --apiserver-advertise-address=2.2.2.101
+```
+Copy the commands to join other master nodes and worker nodes. check commands;
+````
+curl -isk https://2.2.2.100:6443/healthz
+````
+```
+curl -isk https://2.2.2.101:6443/healthz
+````
 ##### Deploy Weave network
 ```
 curl -sSL "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')&env.IPALLOC_RANGE=10.32.0.0/12" > weave.yaml
