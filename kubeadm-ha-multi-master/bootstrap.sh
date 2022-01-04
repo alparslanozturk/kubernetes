@@ -8,15 +8,32 @@ sysctl --system
 
 ###Kubernetes modules
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
 br_netfilter
 EOF
+modprobe overlay
+modprobe br_netfilter
 
 ###Kubernetes sysctl.conf
 cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
 net.bridge.bridge-nf-call-ip6tables = 1
-net.bridge.bridge-nf-call-iptables = 1
 EOF
 sysctl --system
+
+###Docker
+mkdir /etc/docker
+cat <<EOF | tee /etc/docker/daemon.json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
 
 
 ###Enable ssh password authentication
