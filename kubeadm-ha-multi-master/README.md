@@ -120,7 +120,8 @@ kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f weave.yaml
 On your host machine
 ```
 mkdir ~/.kube
-scp root@2.2.2.101:/etc/kubernetes/admin.conf ~/.kube/config
+scp root@2.2.2.101:/etc/kubernetes/admin.conf ~/.kube/config-vagrant
+export KUBECONFIG=~/.kube/config-vagrant
 ```
 Password for root account is kubeadmin (if you used my Vagrant setup)
 
