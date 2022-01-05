@@ -16,7 +16,7 @@ Vagrant.configure(2) do |config|
   config.vm.define "loadbalancer" do |lb|
     lb.vm.box = "alparslanozturk/debian"
     lb.vm.hostname = "loadbalancer.ornek.com"
-    lb.vm.network "private_network", ip: "2.2.2.100"
+    lb.vm.network "private_network", ip: "2.2.2.10"
     lb.vm.provider "vmware_workstation" do |v|
       v.vmx["displayname"] = "loadbalancer"
       v.vmx["memsize"] = 1024
@@ -31,7 +31,7 @@ Vagrant.configure(2) do |config|
     config.vm.define "kmaster#{i}" do |masternode|
       masternode.vm.box = "alparslanozturk/debian"
       masternode.vm.hostname = "kmaster#{i}.ornek.com"
-      masternode.vm.network "private_network", ip: "2.2.2.10#{i}"
+      masternode.vm.network "private_network", ip: "2.2.2.1#{i}"
       masternode.vm.provider "vmware_workstation" do |v|
         v.vmx["displayname"] = "kmaster#{i}"
         v.vmx["memsize"] = 2048
@@ -47,7 +47,7 @@ Vagrant.configure(2) do |config|
     config.vm.define "kworker#{i}" do |workernode|
       workernode.vm.box = "alparslanozturk/debian"
       workernode.vm.hostname = "kworker#{i}.ornek.com"
-      workernode.vm.network "private_network", ip: "2.2.2.20#{i}"
+      workernode.vm.network "private_network", ip: "2.2.2.2#{i}"
       workernode.vm.provider "vmware_workstation" do |v|
         v.vmx["displayname"] = "kworker#{i}"
         v.vmx["memsize"] = 1024
