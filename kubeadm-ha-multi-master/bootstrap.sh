@@ -8,7 +8,7 @@ cat >> /etc/hosts<<EOF
 2.2.2.13 kmaster3.ornek.com kmaster3
 2.2.2.21 kworker1.ornek.com kworker1
 EOF
-sed '/^127.0.2.1 .*/d' /etc/hosts
+sed -i '/^127.0.2.1 .*/d' /etc/hosts
 
 ### vim install 
 apt update && apt install -y vim 
