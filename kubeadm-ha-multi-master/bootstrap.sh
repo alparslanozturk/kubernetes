@@ -3,10 +3,12 @@
 ### host file 
 cat >> /etc/hosts<<EOF
 2.2.2.10 loadbalancer.ornek.com loadbalancer
-2.2.2.11 kmaster1.ornek.com kmaster1
-2.2.2.12 kmaster2.ornek.com kmaster2
-2.2.2.13 kmaster3.ornek.com kmaster3
-2.2.2.21 kworker1.ornek.com kworker1
+2.2.2.11 lb1.ornek.com lb1
+2.2.2.12 lb2.ornek.com lb2
+2.2.2.21 kmaster1.ornek.com kmaster1
+2.2.2.22 kmaster2.ornek.com kmaster2
+2.2.2.23 kmaster3.ornek.com kmaster3
+2.2.2.31 kworker1.ornek.com kworker1
 EOF
 sed -i '/^127.0.2.1 .*/d' /etc/hosts
 
