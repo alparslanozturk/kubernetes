@@ -6,14 +6,21 @@ This documentation guides you in setting up a cluster with two master nodes, one
 ## Vagrant Environment
 |Role|FQDN|IP|OS|RAM|CPU|
 |----|----|----|----|----|----|
-|Load Balancer|loadbalancer.example.com|2.2.2.10|Debian 11|1G|1|
-|Master|kmaster1.example.com|2.2.2.11|Debian 11|2G|2|
-|Master|kmaster2.example.com|2.2.2.12|Debian 11|2G|2|
-|Master|kmaster3.example.com|2.2.2.13|Debian 11|2G|2|
-|Worker|kworker1.example.com|2.2.2.21|Debian 11|1G|1|
+|Load Balancer|loadbalancer.example.com|2.2.2.11|Debian 11|512M|1|
+|Load Balancer|loadbalancer.example.com|2.2.2.12|Debian 11|512M|1|
+|Master|kmaster1.example.com|2.2.2.21|Debian 11|2G|2|
+|Master|kmaster2.example.com|2.2.2.22|Debian 11|2G|2|
+|Master|kmaster3.example.com|2.2.2.23|Debian 11|2G|2|
+|Worker|kworker1.example.com|2.2.2.31|Debian 11|1G|1|
 
 > * Password for the **root** account on all these virtual machines is **parola**
 > * Perform all the commands as root user unless otherwise specified
+> * keepalived monitor only haproxy service and cariers only vip ip(2.2.2.10) between LBs
+
+### Virtual IP managed by Keepalived on the load balancer nodes
+|Virtual IP|
+|----|
+|2.2.2.10|
 
 ## Pre-requisites
 If you want to try this in a virtualized environment on your workstation
@@ -35,11 +42,36 @@ vagrant up
 ## Set up load balancer node
 ##### Install Haproxy
 ```
-apt update && apt install -y haproxy
+apt update && apt install -y keepalived haproxy
 ```
-##### Configure haproxy
+##### Configure keepalived
+Appedn the below lines to **/etc/keepalived/keepalived.conf***
+cat > /etc/keepalived/keepalived.conf <EOF
+global_defs {
+    script_user root
+    enable_script_security
+}
+vrrp_script check_haproxy {
+    script "/usr/bin/killall -0 haproxy"
+    interval 2
+    weight 2
+}
+vrrp_instance VI_HAPROXY {
+    state MASTER
+    #interface ens32
+    virtual_router_id 51
+    priority 100
+    virtual_ipaddress {
+        2.2.2.10
+    }
+    track_script {
+        check_haproxy
+    }
+}
+EOF
 Append the below lines to **/etc/haproxy/haproxy.cfg**
 ```
+cat >> /etc/haproxy/haproxy.cfg <<EOF
 listen stats
         mode http
         bind *:80
@@ -58,6 +90,31 @@ listen kubernetes-api
                 server kmaster1 2.2.2.11:6443
                 server kmaster2 2.2.2.12:6443
                 server kmaster3 2.2.2.13:6443
+EOF
+```
+##### Configure haproxy
+Append the below lines to **/etc/haproxy/haproxy.cfg**
+```
+cat >> /etc/haproxy/haproxy.cfg <<EOF
+listen stats
+        mode http
+        bind *:80
+        stats enable
+        stats uri /
+
+listen kubernetes-api
+        mode tcp
+        bind *:6443
+        option tcplog
+        option httpchk GET /healthz HTTP/2
+        http-check expect status 200
+        option ssl-hello-chk
+        balance roundrobin
+        default-server check inter 2s fall 3 rise 2
+                server kmaster1 2.2.2.11:6443
+                server kmaster2 2.2.2.12:6443
+                server kmaster3 2.2.2.13:6443
+EOF
 ```
 ##### Restart haproxy service
 ```
