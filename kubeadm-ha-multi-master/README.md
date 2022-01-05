@@ -6,8 +6,8 @@ This documentation guides you in setting up a cluster with two master nodes, one
 ## Vagrant Environment
 |Role|FQDN|IP|OS|RAM|CPU|
 |----|----|----|----|----|----|
-|Load Balancer|loadbalancer.example.com|2.2.2.11|Debian 11|512M|1|
-|Load Balancer|loadbalancer.example.com|2.2.2.12|Debian 11|512M|1|
+|Load Balancer|lb1.example.com|2.2.2.11|Debian 11|512M|1|
+|Load Balancer|lb2.example.com|2.2.2.12|Debian 11|512M|1|
 |Master|kmaster1.example.com|2.2.2.21|Debian 11|2G|2|
 |Master|kmaster2.example.com|2.2.2.22|Debian 11|2G|2|
 |Master|kmaster3.example.com|2.2.2.23|Debian 11|2G|2|
