@@ -22,7 +22,10 @@ If you want to try this in a virtualized environment on your workstation
 * Microsoft Windows openSSH feature installed 
 * Host machine has atleast 8 cores
 * Host machine has atleast 8G memory
-
+## Start vagrant vagrant-vmware-utility
+```
+net start vagrant-vmware-utility
+```
 ## Bring up all the virtual machines
 ```
 vagrant up
@@ -46,8 +49,9 @@ listen kubernetes-api
         mode tcp
         bind *:6443
         option tcplog
-        #option ssl-hello-chk
-        #option httpchk GET /healthz 200
+        option httpchk GET /healthz HTTP/2
+        http-check expect status 200
+        option ssl-hello-chk
         balance roundrobin
         default-server check inter 2s fall 3 rise 2
                 server kmaster1 2.2.2.101:6443
