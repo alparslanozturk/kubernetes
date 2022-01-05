@@ -6,7 +6,7 @@ cat >> /etc/hosts<<EOF
 2.2.2.101 kmaster1.ornek.com kmaster1
 2.2.2.102 kmaster2.ornek.com kmaster2
 2.2.2.103 kmaster3.ornek.com kmaster3
-2.2.2.104 kworker1.ornek.com kworker1
+2.2.2.201 kworker1.ornek.com kworker1
 EOF
 sed '/^127.0.2.1 .*/d' /etc/hosts
 
