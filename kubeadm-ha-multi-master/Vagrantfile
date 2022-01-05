@@ -12,15 +12,19 @@ Vagrant.configure(2) do |config|
   config.ssh.password = "parola"
   config.ssh.insert_key = "true"
 
-  # Load Balancer Node
-  config.vm.define "loadbalancer" do |lb|
-    lb.vm.box = "alparslanozturk/debian"
-    lb.vm.hostname = "loadbalancer.ornek.com"
-    lb.vm.network "private_network", ip: "2.2.2.10"
-    lb.vm.provider "vmware_workstation" do |v|
-      v.vmx["displayname"] = "loadbalancer"
-      v.vmx["memsize"] = 1024
-      v.vmx["numvcpus"] = 1
+  Loadbalancer = 2
+  
+  # Load Balancer Nodes
+  (1..Loadbalancer).each do |i|
+    config.vm.define "loadbalancer" do |lb|
+      lb.vm.box = "alparslanozturk/debian"
+      lb.vm.hostname = "loadbalancer.ornek.com"
+      lb.vm.network "private_network", ip: "2.2.2.1#{i}"
+      lb.vm.provider "vmware_workstation" do |v|
+        v.vmx["displayname"] = "loadbalancer"
+        v.vmx["memsize"] = 512
+        v.vmx["numvcpus"] = 1
+      end
     end
   end
 
@@ -31,7 +35,7 @@ Vagrant.configure(2) do |config|
     config.vm.define "kmaster#{i}" do |masternode|
       masternode.vm.box = "alparslanozturk/debian"
       masternode.vm.hostname = "kmaster#{i}.ornek.com"
-      masternode.vm.network "private_network", ip: "2.2.2.1#{i}"
+      masternode.vm.network "private_network", ip: "2.2.2.2#{i}"
       masternode.vm.provider "vmware_workstation" do |v|
         v.vmx["displayname"] = "kmaster#{i}"
         v.vmx["memsize"] = 2048
@@ -47,7 +51,7 @@ Vagrant.configure(2) do |config|
     config.vm.define "kworker#{i}" do |workernode|
       workernode.vm.box = "alparslanozturk/debian"
       workernode.vm.hostname = "kworker#{i}.ornek.com"
-      workernode.vm.network "private_network", ip: "2.2.2.2#{i}"
+      workernode.vm.network "private_network", ip: "2.2.2.3#{i}"
       workernode.vm.provider "vmware_workstation" do |v|
         v.vmx["displayname"] = "kworker#{i}"
         v.vmx["memsize"] = 1024
