@@ -1,5 +1,17 @@
 #!/bin/bash
 
+### host file 
+cat >> /etc/hosts<<EOF
+2.2.2.100 loadbalancer.ornek.com loadbalancer
+2.2.2.101 kmaster1.ornek.com kmaster1
+2.2.2.102 kmaster2.ornek.com kmaster2
+2.2.2.103 kworker1.ornek.com kworker1
+EOF
+sed '/^127.0.2.1 .*/d' /etc/hosts
+
+### vim install 
+apt update && apt install -y vim 
+
 ###Disable ipv6
 cat <<EOF | sudo tee /etc/sysctl.d/ipv6.conf
 net.ipv6.conf.all.disable_ipv6 = 1
