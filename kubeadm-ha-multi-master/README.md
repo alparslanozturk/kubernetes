@@ -1,7 +1,7 @@
 # Set up a Highly Available Kubernetes Cluster using kubeadm
 Follow this documentation to set up a highly available Kubernetes cluster using __Debian GNU/Linux 11 (bullseye)__.
 
-This documentation guides you in setting up a cluster with two master nodes, one worker node and a load balancer node using HAProxy.
+This documentation guides you in setting up a cluster with three master nodes, one worker node and two load balancer node using HAProxy.
 
 ## Vagrant Environment
 |Role|FQDN|IP|OS|RAM|CPU|
