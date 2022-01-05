@@ -90,20 +90,8 @@ apt-get update && apt-get install -y kubelet kubeadm kubectl && apt-mark hold ku
 ```
 ## On any one of the Kubernetes master node (Eg: kmaster1)
 ##### Initialize Kubernetes Cluster
-First I prefared name instead of IP. So add /etc/hosts these config;
 ```
-cat >> /etc/hosts<<EOF
-2.2.2.11 loadbalancer.ornek.com loadbalancer
-2.2.2.11 kmaster1.ornek.com kmaster1
-2.2.2.12 kmaster2.ornek.com kmaster2
-2.2.2.13 kmaster3.ornek.com kmaster3
-2.2.2.21 kworker1.ornek.com kworker1
-EOF
-```
-After finish "kubeadm init ..."  change first line of hosts file. loadbalancer ip address: ``` 2.2.2.100 loadbalancer.ornek.com loadbalancer ```
-
-```
-kubeadm init --control-plane-endpoint="loadbalancer.ornek.com:6443" --upload-certs --apiserver-advertise-address=2.2.2.101
+kubeadm init --control-plane-endpoint="loadbalancer.ornek.com:6443" --upload-certs --apiserver-advertise-address=2.2.2.11
 ```
 Copy the commands to join other master nodes and worker nodes. check commands;
 ````
