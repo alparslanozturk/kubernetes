@@ -7,9 +7,10 @@ This documentation guides you in setting up a cluster with two master nodes, one
 |Role|FQDN|IP|OS|RAM|CPU|
 |----|----|----|----|----|----|
 |Load Balancer|loadbalancer.example.com|2.2.2.100|Debian 11|1G|1|
-|Master|kmaster1.example.com|2.2.2.101|Debian 11|2G|2|
-|Master|kmaster2.example.com|2.2.2.102|Debian 11|2G|2|
-|Worker|kworker1.example.com|2.2.2.201|Debian 11|1G|1|
+|Master|kmaster1.example.com|2.2.2.11|Debian 11|2G|2|
+|Master|kmaster2.example.com|2.2.2.12|Debian 11|2G|2|
+|Master|kmaster3.example.com|2.2.2.13|Debian 11|2G|2|
+|Worker|kworker1.example.com|2.2.2.21|Debian 11|1G|1|
 
 > * Password for the **root** account on all these virtual machines is **parola**
 > * Perform all the commands as root user unless otherwise specified
@@ -54,8 +55,9 @@ listen kubernetes-api
         option ssl-hello-chk
         balance roundrobin
         default-server check inter 2s fall 3 rise 2
-                server kmaster1 2.2.2.101:6443
-                server kmaster2 2.2.2.102:6443
+                server kmaster1 2.2.2.11:6443
+                server kmaster2 2.2.2.12:6443
+                server kmaster2 2.2.2.13:6443
 ```
 ##### Restart haproxy service
 ```
@@ -91,10 +93,11 @@ apt-get update && apt-get install -y kubelet kubeadm kubectl && apt-mark hold ku
 First I prefared name instead of IP. So add /etc/hosts these config;
 ```
 cat >> /etc/hosts<<EOF
-2.2.2.101 loadbalancer.ornek.com loadbalancer
-2.2.2.101 kmaster1.ornek.com kmaster1
-2.2.2.102 kmaster2.ornek.com kmaster2
-2.2.2.103 kworker1.ornek.com kworker1
+2.2.2.11 loadbalancer.ornek.com loadbalancer
+2.2.2.11 kmaster1.ornek.com kmaster1
+2.2.2.12 kmaster2.ornek.com kmaster2
+2.2.2.13 kmaster3.ornek.com kmaster3
+2.2.2.21 kworker1.ornek.com kworker1
 EOF
 ```
 After finish "kubeadm init ..."  change first line of hosts file. loadbalancer ip address: ``` 2.2.2.100 loadbalancer.ornek.com loadbalancer ```
@@ -104,10 +107,10 @@ kubeadm init --control-plane-endpoint="loadbalancer.ornek.com:6443" --upload-cer
 ```
 Copy the commands to join other master nodes and worker nodes. check commands;
 ````
-curl -isk https://2.2.2.100:6443/healthz
+curl -isk https://2.2.2.10:6443/healthz
 ````
 ```
-curl -isk https://2.2.2.101:6443/healthz
+curl -isk https://2.2.2.11:6443/healthz
 ````
 ##### Deploy Weave network
 ```
