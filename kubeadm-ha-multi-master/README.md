@@ -134,6 +134,10 @@ Password for root account is kubeadmin (if you used my Vagrant setup)
 kubectl cluster-info
 kubectl get nodes
 kubectl get cs
+or 
+kubectl drain kmaster1 --ignore-daemonsets --delete-emptydir-data
+kubectl delete node kmaster1
+
 ```
 
 Have Fun!!
