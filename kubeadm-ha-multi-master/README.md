@@ -8,10 +8,10 @@ This documentation guides you in setting up a cluster with two master nodes, one
 |----|----|----|----|----|----|
 |Load Balancer|lb1.example.com|2.2.2.11|Debian 11|512M|1|
 |Load Balancer|lb2.example.com|2.2.2.12|Debian 11|512M|1|
-|Master|kmaster1.example.com|2.2.2.21|Debian 11|2G|2|
-|Master|kmaster2.example.com|2.2.2.22|Debian 11|2G|2|
-|Master|kmaster3.example.com|2.2.2.23|Debian 11|2G|2|
-|Worker|kworker1.example.com|2.2.2.31|Debian 11|1G|1|
+|Master|master1.example.com|2.2.2.21|Debian 11|2G|2|
+|Master|master2.example.com|2.2.2.22|Debian 11|2G|2|
+|Master|master3.example.com|2.2.2.23|Debian 11|2G|2|
+|Worker|worker1.example.com|2.2.2.31|Debian 11|1G|1|
 
 > * Password for the **root** account on all these virtual machines is **parola**
 > * Perform all the commands as root user unless otherwise specified
@@ -87,9 +87,9 @@ listen kubernetes-api
         option ssl-hello-chk
         balance roundrobin
         default-server check inter 2s fall 3 rise 2
-                server kmaster1 2.2.2.11:6443
-                server kmaster2 2.2.2.12:6443
-                server kmaster3 2.2.2.13:6443
+                server master1 2.2.2.11:6443
+                server master2 2.2.2.12:6443
+                server master3 2.2.2.13:6443
 EOF
 ```
 ##### Configure haproxy
@@ -111,9 +111,9 @@ listen kubernetes-api
         option ssl-hello-chk
         balance roundrobin
         default-server check inter 2s fall 3 rise 2
-                server kmaster1 2.2.2.11:6443
-                server kmaster2 2.2.2.12:6443
-                server kmaster3 2.2.2.13:6443
+                server master1 2.2.2.11:6443
+                server master2 2.2.2.12:6443
+                server master3 2.2.2.13:6443
 EOF
 ```
 ##### Restart haproxy service
@@ -145,7 +145,7 @@ systemctl restart haproxy
 ```
 apt-get update && apt-get install -y kubelet kubeadm kubectl && apt-mark hold kubelet kubeadm kubectl
 ```
-## On any one of the Kubernetes master node (Eg: kmaster1)
+## On any one of the Kubernetes master node (Eg: master1)
 ##### Initialize Kubernetes Cluster
 ```
 kubeadm init --control-plane-endpoint="loadbalancer.ornek.com:6443" --upload-certs --apiserver-advertise-address=2.2.2.11
@@ -163,7 +163,7 @@ curl -sSL "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | bas
 kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f weave.yaml
 ```
 
-## Join other nodes to the cluster (kmaster2 & kworker1)
+## Join other nodes to the cluster (master2 & worker1)
 > Use the respective kubeadm join commands you copied from the output of kubeadm init command on the first master.
 
 > IMPORTANT: You also need to pass --apiserver-advertise-address to the join command when you join the other master node.
@@ -183,8 +183,8 @@ kubectl cluster-info
 kubectl get nodes
 kubectl get cs
 or 
-kubectl drain kmaster1 --ignore-daemonsets --delete-emptydir-data
-kubectl delete node kmaster1
+kubectl drain master1 --ignore-daemonsets --delete-emptydir-data
+kubectl delete node master1
 
 ```
 

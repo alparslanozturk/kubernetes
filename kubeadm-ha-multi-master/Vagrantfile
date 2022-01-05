@@ -32,12 +32,12 @@ Vagrant.configure(2) do |config|
 
   # Kubernetes Master Nodes
   (1..MasterCount).each do |i|
-    config.vm.define "kmaster#{i}" do |masternode|
+    config.vm.define "master#{i}" do |masternode|
       masternode.vm.box = "alparslanozturk/debian"
-      masternode.vm.hostname = "kmaster#{i}.ornek.com"
+      masternode.vm.hostname = "master#{i}.ornek.com"
       masternode.vm.network "private_network", ip: "2.2.2.2#{i}"
       masternode.vm.provider "vmware_workstation" do |v|
-        v.vmx["displayname"] = "kmaster#{i}"
+        v.vmx["displayname"] = "master#{i}"
         v.vmx["memsize"] = 2048
         v.vmx["numvcpus"] = 2
       end
@@ -48,12 +48,12 @@ Vagrant.configure(2) do |config|
 
   # Kubernetes Worker Nodes
   (1..NodeCount).each do |i|
-    config.vm.define "kworker#{i}" do |workernode|
+    config.vm.define "worker#{i}" do |workernode|
       workernode.vm.box = "alparslanozturk/debian"
-      workernode.vm.hostname = "kworker#{i}.ornek.com"
+      workernode.vm.hostname = "worker#{i}.ornek.com"
       workernode.vm.network "private_network", ip: "2.2.2.3#{i}"
       workernode.vm.provider "vmware_workstation" do |v|
-        v.vmx["displayname"] = "kworker#{i}"
+        v.vmx["displayname"] = "worker#{i}"
         v.vmx["memsize"] = 1024
         v.vmx["numvcpus"] = 1
       end
