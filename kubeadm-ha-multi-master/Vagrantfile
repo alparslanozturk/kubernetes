@@ -18,7 +18,7 @@ Vagrant.configure(2) do |config|
   (1..Loadbalancer).each do |i|
     config.vm.define "loadbalancer" do |lb|
       lb.vm.box = "alparslanozturk/debian"
-      lb.vm.hostname = "loadbalancer.ornek.com"
+      lb.vm.hostname = "lb#{i}.ornek.com"
       lb.vm.network "private_network", ip: "2.2.2.1#{i}"
       lb.vm.provider "vmware_workstation" do |v|
         v.vmx["displayname"] = "loadbalancer"
