@@ -45,7 +45,7 @@ vagrant up
 apt update && apt install -y keepalived haproxy
 ```
 ##### Configure keepalived
-Appedn the below lines to **/etc/keepalived/keepalived.conf***
+Append the below lines to **/etc/keepalived/keepalived.conf**
 cat > /etc/keepalived/keepalived.conf <EOF
 global_defs {
     script_user root
@@ -69,29 +69,6 @@ vrrp_instance VI_HAPROXY {
     }
 }
 EOF
-Append the below lines to **/etc/haproxy/haproxy.cfg**
-```
-cat >> /etc/haproxy/haproxy.cfg <<EOF
-listen stats
-        mode http
-        bind *:80
-        stats enable
-        stats uri /
-
-listen kubernetes-api
-        mode tcp
-        bind *:6443
-        option tcplog
-        option httpchk GET /healthz HTTP/2
-        http-check expect status 200
-        option ssl-hello-chk
-        balance roundrobin
-        default-server check inter 2s fall 3 rise 2
-                server master1 2.2.2.11:6443
-                server master2 2.2.2.12:6443
-                server master3 2.2.2.13:6443
-EOF
-```
 ##### Configure haproxy
 Append the below lines to **/etc/haproxy/haproxy.cfg**
 ```
@@ -118,7 +95,7 @@ EOF
 ```
 ##### Restart haproxy service
 ```
-systemctl restart haproxy
+systemctl enable --now haproxy keepalived
 ```
 
 ### Kubernetes Setup
