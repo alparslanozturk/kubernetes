@@ -52,20 +52,20 @@ global_defs {
     script_user root
     enable_script_security
 }
-vrrp_script check_haproxy {
-    script "/usr/bin/killall -0 haproxy"
-    interval 2
-    weight 2
+vrrp_track_process check_haproxy {
+        process haproxy
+        quorum 1
+        delay 2
 }
 vrrp_instance VI_HAPROXY {
-    state MASTER
-    #interface ens32
+    state MASTER                # MASTER or BACKUP
+    interface ens34
     virtual_router_id 51
-    priority 100
+    priority 101                # 101 for master other 100
     virtual_ipaddress {
         2.2.2.10
     }
-    track_script {
+    track_process {
         check_haproxy
     }
 }
