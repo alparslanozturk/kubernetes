@@ -103,6 +103,8 @@ EOF
 systemctl enable --now keepalived
 sleep 3
 systemctl enable --now haproxy
+systemctl  status keepalived.service  haproxy.service
+tail -f /var/log/haproxy.log                         
 ```
 
 ### Kubernetes Setup
