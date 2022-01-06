@@ -97,7 +97,9 @@ EOF
 ```
 ##### Restart haproxy service
 ```
-systemctl enable --now haproxy keepalived
+systemctl enable --now keepalived
+sleep 3
+systemctl enable --now haproxy
 ```
 
 ### Kubernetes Setup
@@ -127,7 +129,7 @@ apt-get update && apt-get install -y kubelet kubeadm kubectl && apt-mark hold ku
 ## On any one of the Kubernetes master node (Eg: master1)
 ##### Initialize Kubernetes Cluster
 ```
-kubeadm init --control-plane-endpoint="loadbalancer.ornek.com:6443" --upload-certs --apiserver-advertise-address=2.2.2.11
+kubeadm init --control-plane-endpoint="loadbalancer.ornek.com:6443" --upload-certs --apiserver-advertise-address=2.2.2.21
 ```
 Copy the commands to join other master nodes and worker nodes. check commands;
 ````
