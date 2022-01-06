@@ -47,7 +47,7 @@ apt update && apt install -y keepalived haproxy
 ##### Configure keepalived
 Append the below lines to **/etc/keepalived/keepalived.conf**
 ```
-cat > /etc/keepalived/keepalived.conf <EOF
+cat > /etc/keepalived/keepalived.conf <<EOF
 global_defs {
     script_user root
     enable_script_security
