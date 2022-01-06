@@ -153,6 +153,14 @@ kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f weave.yaml
 > IMPORTANT: You also need to pass --apiserver-advertise-address to the join command when you join the other master node.
 
 ```
+cat > /etc/keepalived/check_apiserver.sh <<EOF
+#!/bin/bash
+
+curl --silent --max-time 2 --insecure https://localhost:6443/ -o /dev/null || exit 1
+EOF
+chmod +x /etc/keepalived/check_apiserver.sh
+```
+```
 cat > /etc/keepalived/keepalived.conf <<EOF
 global_defs {
     script_user root
