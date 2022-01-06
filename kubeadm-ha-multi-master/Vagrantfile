@@ -16,7 +16,7 @@ Vagrant.configure(2) do |config|
   
   # Load Balancer Nodes
   (1..Loadbalancer).each do |i|
-    config.vm.define "loadbalancer" do |lb|
+    config.vm.define "lb#{i}" do |lb|
       lb.vm.box = "alparslanozturk/debian"
       lb.vm.hostname = "lb#{i}.ornek.com"
       lb.vm.network "private_network", ip: "2.2.2.1#{i}"
