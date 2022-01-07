@@ -1,7 +1,7 @@
 # Set up a Highly Available Kubernetes Cluster using kubeadm
 Follow this documentation to set up a highly available Kubernetes cluster using __Debian GNU/Linux 11 (bullseye)__.
 
-This documentation guides you in setting up a cluster with three master nodes, one worker node and two load balancer node using HAProxy.
+This documentation guides you in setting up a cluster with 3 master nodes, 1 worker node and 2 load balancer node using HAProxy. Additinaly  I will configure keepalived & haproxy  on master nodes for feaure included LB installation. 
 
 ## Vagrant Environment
 |Role|FQDN|IP|OS|RAM|CPU|
@@ -33,6 +33,9 @@ If you want to try this in a virtualized environment on your workstation
 ## Start vagrant vagrant-vmware-utility
 ```
 net start vagrant-vmware-utility
+vagrant plugin install vagrant-vmware-desktop
+set VAGRANT_DEFAULT_PROVIDER=vmware_workstation
+echo %VAGRANT_DEFAULT_PROVIDER%
 ```
 ## Bring up all the virtual machines
 ```
@@ -90,9 +93,9 @@ listen kubernetes-api
         option ssl-hello-chk
         balance roundrobin
         default-server check inter 2s fall 3 rise 2
-                server master1 2.2.2.11:6443
-                server master2 2.2.2.12:6443
-                server master3 2.2.2.13:6443
+                server master1 2.2.2.21:6443
+                server master2 2.2.2.22:6443
+                server master3 2.2.2.23:6443
 EOF
 ```
 ##### Restart haproxy service
@@ -100,6 +103,8 @@ EOF
 systemctl enable --now keepalived
 sleep 3
 systemctl enable --now haproxy
+systemctl  status keepalived.service  haproxy.service
+tail -f /var/log/haproxy.log                         
 ```
 
 ### Kubernetes Setup
@@ -144,10 +149,66 @@ curl -sSL "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | bas
 kubectl --kubeconfig=/etc/kubernetes/admin.conf create -f weave.yaml
 ```
 
-## Join other nodes to the cluster (master2 & worker1)
+## Join other nodes to the cluster (master2 & master3 & worker1)
 > Use the respective kubeadm join commands you copied from the output of kubeadm init command on the first master.
 
 > IMPORTANT: You also need to pass --apiserver-advertise-address to the join command when you join the other master node.
+
+```
+cat > /etc/keepalived/check_apiserver.sh <<EOF
+#!/bin/bash
+
+curl --silent --max-time 2 --insecure https://localhost:6443/ -o /dev/null || exit 1
+EOF
+chmod +x /etc/keepalived/check_apiserver.sh
+```
+```
+cat > /etc/keepalived/keepalived.conf <<EOF
+global_defs {
+    script_user root
+    enable_script_security
+}
+vrrp_script check_apiserver {
+        script "/etc/keepalived/check_apiserver.sh"
+}
+vrrp_instance VI_HAPROXY {
+    state MASTER                # MASTER or BACKUP
+    interface ens34
+    virtual_router_id 51
+    priority 101                # 101 for master other 100
+    virtual_ipaddress {
+        2.2.2.20/24
+    }
+    track_script {
+        check_apiserver
+    }
+}
+EOF
+```
+```
+cat >> /etc/haproxy/haproxy.cfg <<EOF
+listen stats
+        mode http
+        bind 2.2.2.20:80
+        stats enable
+        stats uri /
+
+listen kubernetes-api
+        mode tcp
+        bind 2.2.2.20:6443
+        option tcplog
+        option httpchk GET /healthz HTTP/2
+        http-check expect status 200
+        option ssl-hello-chk
+        balance roundrobin
+        default-server check inter 2s fall 3 rise 2
+                server master1 2.2.2.21:6443
+                server master2 2.2.2.22:6443
+                server master3 2.2.2.23:6443
+EOF
+```
+
+
 
 ## Downloading kube config to your local machine
 On your host machine
