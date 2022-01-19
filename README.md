@@ -3,4 +3,6 @@ Kubernetes playground
 
 
 1. With Haproxy and Kubeadm setup kuberntes multimaster cluster by using vagrant ( vmware provider )
-2.  
+2. Statefull sets, persistent volumes 
+3. https://prometheus.io/docs/prometheus/latest/federation/
+4. 
