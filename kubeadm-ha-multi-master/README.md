@@ -34,7 +34,7 @@ If you want to try this in a virtualized environment on your workstation
 ```
 net start vagrant-vmware-utility
 vagrant plugin install vagrant-vmware-desktop
-set VAGRANT_DEFAULT_PROVIDER=vmware_workstation
+set VAGRANT_DEFAULT_PROVIDER=vmware_desktop
 echo %VAGRANT_DEFAULT_PROVIDER%
 ```
 ## Bring up all the virtual machines
