@@ -49,7 +49,10 @@ cat > ./metadata.json <<EOF
 EOF
 
 tar cvzf myboxfile.box ./*
-vagrant box add mybox myboxfile.box
+#or
+tar czvf debian.box debian.vmdk debian.vmsd debian.vmx metadata.json
+
+vagrant box add alparslanozturk/debian debian.box
 ```
 5. test with 
 ```
