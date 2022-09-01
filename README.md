@@ -42,7 +42,7 @@ vmware-vdiskmanager -d box.vmdk
 vmware-vdiskmanager -k box.vmdk
 rm logs files. 
 
-cat ./metadata.json <<EOF
+cat > ./metadata.json <<EOF
 {
   "provider": "vmware_desktop"
 }
@@ -57,6 +57,11 @@ vagrant init mybox
 vagrant up
 ```
 6. uploading....
+
+https://app.vagrantup.com/alparslanozturk
+
+sample:
+![resim](https://user-images.githubusercontent.com/9527118/187871158-84135ccc-d1cf-478a-8eb4-cedd4556f244.png)
 
 
 
